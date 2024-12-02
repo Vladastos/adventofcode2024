@@ -1,1 +1,0 @@
-/home/vlad/test/adventofcode2024/day2/puzzle1/solution/target/debug/solution: /home/vlad/test/adventofcode2024/day2/puzzle1/solution/src/../../input/input /home/vlad/test/adventofcode2024/day2/puzzle1/solution/src/main.rs

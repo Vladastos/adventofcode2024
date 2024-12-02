@@ -1,6 +1,5 @@
-use std::f32::consts::E;
-
 const INPUT: &str = include_str!("../../input/input");
+
 fn main() {
     let input = split_input(INPUT);
     println!("{}", solve(&input));
@@ -50,7 +49,7 @@ fn solve(input: &Vec<Vec<i32>>) -> i32 {
                 break;
             }
         }
-        
+
         if is_safe {
             println!("{:?} is safe", line);
             safe_count += 1;
