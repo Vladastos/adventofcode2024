@@ -1,17 +1,13 @@
-const INPUT: &str = include_str!("../../input/input");
+const INPUT: &str = include_str!("../../input/test");
 fn main() {
-    let (rules, lines) = process_input(INPUT);
+    let (rules, lines) = parse_input(INPUT);
 
-    let invalid_lines = filter_lines(rules.clone(), lines);
+    let result = solve(rules, lines);
 
-    let sorted_invalid_lines = sort_invalid_lines(invalid_lines, rules);
-
-    let sum = sum_central_elements(sorted_invalid_lines);
-
-    println!("Sum: {:?}", sum);
+    println!("Result: {:?}", result);
 }
 
-fn process_input(input: &str) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
+fn parse_input(input: &str) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
     let (rules, lines) = input.split_once("\n\n").unwrap();
 
     // Split the rules
@@ -33,6 +29,17 @@ fn process_input(input: &str) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
         .collect();
 
     return (processed_rules, processed_lines);
+}
+
+fn solve(rules: Vec<(i32, i32)>, lines: Vec<Vec<i32>>) -> i32 {
+    // Select the invalid lines from the input
+    let invalid_lines = filter_lines(rules.clone(), lines);
+
+    println!("{:?}", invalid_lines);
+
+    // Sort the invalid lines
+    let invalid_lines = sort_invalid_lines(invalid_lines, rules);
+    return sum_central_elements(invalid_lines);
 }
 
 fn filter_lines(rules: Vec<(i32, i32)>, lines: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
@@ -141,8 +148,6 @@ fn transitive_closure(graph: Vec<(i32, Vec<i32>)>) -> Vec<(i32, Vec<i32>)> {
     let mut new_graph = graph.clone();
     let mut changed = true;
     // Do a transitive closure
-    while changed {
-        changed = false;
     }
     return new_graph;
 }
