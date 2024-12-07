@@ -139,7 +139,10 @@ fn generate_graph(rules: Vec<(i32, i32)>) -> Vec<(i32, Vec<i32>)> {
 
 fn transitive_closure(graph: Vec<(i32, Vec<i32>)>) -> Vec<(i32, Vec<i32>)> {
     let mut new_graph = graph.clone();
-    let mut has_changed = true;
-    loop {}
+    let mut changed = true;
+    // Do a transitive closure
+    while changed {
+        changed = false;
+    }
     return new_graph;
 }
