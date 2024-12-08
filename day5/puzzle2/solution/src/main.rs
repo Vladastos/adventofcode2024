@@ -108,7 +108,7 @@ fn sort_invalid_lines(lines: Vec<Vec<i32>>, rules: Vec<(i32, i32)>) -> Vec<Vec<i
 
 fn get_topological_order(rules: Vec<(i32, i32)>) -> Vec<i32> {
     // Generate the adjacency list from the rules
-    let graph = transitive_closure(generate_graph(rules));
+    let graph = generate_graph(rules);
 
     let mut ordered_graph: Vec<(i32, Vec<i32>)> = vec![];
     for (key, value) in &graph {
@@ -142,12 +142,4 @@ fn generate_graph(rules: Vec<(i32, i32)>) -> Vec<(i32, Vec<i32>)> {
             .push(rule.1);
     }
     return graph;
-}
-
-fn transitive_closure(graph: Vec<(i32, Vec<i32>)>) -> Vec<(i32, Vec<i32>)> {
-    let mut new_graph = graph.clone();
-    let mut changed = true;
-    // Do a transitive closure
-    }
-    return new_graph;
 }
