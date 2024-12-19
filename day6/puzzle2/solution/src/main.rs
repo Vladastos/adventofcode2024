@@ -1,6 +1,8 @@
 const INPUT: &str = include_str!("../../input/input");
 
-type Grid = Vec<Vec<(bool, bool)>>;
+type Grid = Vec<Vec<GridCell>>;
+
+type GridCell = (bool, bool, Option<(i64, i64)>); // is_occupied, is_visited, direction
 
 #[derive(Debug, Clone)]
 struct Guard {
@@ -74,21 +76,21 @@ fn solve(grid: &Grid, mut guard: Guard) -> i64 {
 }
 
 fn check_for_loop(mut grid: Grid, mut guard: Guard) -> bool {
-    let mut number_of_turns = 0;
-    let mut steps_since_last_turn = 0;
-    let starting_position = (guard.x, guard.y);
     let mut loop_found = false;
-    // Put an obstacle in the cell ahead
+
+    // Get the coordinates of the cell ahead
     let x_ahead = guard.x as i64 + guard.direction.0;
     let y_ahead = guard.y as i64 + guard.direction.1;
 
-    // If the cell ahead has already been visited, we're done
+    // If the cell ahead has already been visited, we're done as we can't put an obstacle there
     if grid[x_ahead as usize][y_ahead as usize].1 {
         return false;
     }
 
+    // Mark the cell ahead as occupied
     grid[x_ahead as usize][y_ahead as usize].0 = true;
 
+    // Turn right
     guard.direction = match guard.direction {
         (0, 1) => (1, 0),
         (1, 0) => (0, -1),
@@ -110,20 +112,24 @@ fn check_for_loop(mut grid: Grid, mut guard: Guard) -> bool {
             break;
         }
 
+        // If the current cell has already been visited in the same direction, we're done
+        if grid[guard.x][guard.y].1 && grid[guard.x][guard.y].2 == Some(guard.direction) {
+            loop_found = true;
+            break;
+        }
+
+        // Mark the current cell as visited, but do not change the direction if it has already been visited
+        grid[guard.x][guard.y].1 = true;
+
+        // Mark the current direction
+        if grid[guard.x][guard.y].2.is_none() {
+            grid[guard.x][guard.y].2 = Some(guard.direction);
+        }
         // If the cell ahead is occupied, turn right
         if grid[x_ahead as usize][y_ahead as usize].0 {
             // Before turning, check if current position is the same as the starting position
 
             // If the current position is the same as the starting position, we're in a loop
-            if guard.x == starting_position.0
-                && guard.y == starting_position.1
-                && steps_since_last_turn > 0
-            {
-                loop_found = true;
-                break;
-            }
-            steps_since_last_turn = 0;
-            number_of_turns += 1;
             guard.direction = match guard.direction {
                 (0, 1) => (1, 0),
                 (1, 0) => (0, -1),
@@ -138,10 +144,6 @@ fn check_for_loop(mut grid: Grid, mut guard: Guard) -> bool {
             // If the cell ahead is not occupied, move forward
             guard.x = x_ahead as usize;
             guard.y = y_ahead as usize;
-            steps_since_last_turn += 1;
-        }
-        if number_of_turns >= 10000 {
-            break;
         }
     }
 
@@ -160,14 +162,14 @@ fn parse_input(input: &str) -> (Grid, Guard) {
         grid.push(Vec::new());
         for (_, c) in line.chars().enumerate() {
             if c == '#' {
-                grid[y].push((true, false));
+                grid[y].push((true, false, None));
             } else if c == '^' {
                 guard.x = y;
                 guard.y = grid[y].len();
                 guard.direction = (-1, 0);
-                grid[y].push((false, false));
+                grid[y].push((false, false, Some((guard.x as i64, guard.y as i64))));
             } else {
-                grid[y].push((false, false));
+                grid[y].push((false, false, None));
             }
         }
     }
